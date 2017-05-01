@@ -1,0 +1,91 @@
+extends ../layouts/layout.pug
+block content
+	.row
+		.col.s12
+			br
+			.page-title
+				form(method='POST', action='/consulta', accept-charset='UTF-8', role='form')
+					input#mesUno(type='hidden', name='mesUno')
+					input#mesDos(type='hidden', name='mesDos')
+					input#yearUno(type='hidden', name='yearUno')
+					input#yearDos(type='hidden', name='yearDos')
+					div(style="display:none;")
+						select#multiple.js-states.browser-default.select2-hidden-accessible(multiple='', aria-hidden='true', tabindex='-1', style='width:100%;', name='select_cons')
+							each row in consultores
+								option(value=row.co_usuario)= row.no_usuario
+					button#grafico.waves-effect.waves-light.btn(name='grafico', type='submit', value='grafico')
+						i.fa.fa-bar-chart(aria-hidden='true')
+					button#pizza.waves-effect.waves-light.btn(name='pizza', type='submit', value='pizza')
+						i.fa.fa-pie-chart(aria-hidden='true')
+		.col.s12.m12.l12
+			.card
+				.card-content
+					#table-agence.row
+						.col.s12.m12.l12
+							a(href='/', style='color: #0089ec !important;')
+								i.fa.fa-arrow-left.fa-3(aria-hidden='true')
+								|  Atrás
+							if query == ''
+								include ../layouts/include.pug
+							each list in query2
+								- total_liq=0;
+								- total_brut=0;
+								- total_comision=0;
+								- total_lucro=0;
+								span.new.badge(data-badge-caption= list.co_usuario)
+									i.fa.fa-user(aria-hidden='true')
+								table.highlight(style='margin-bottom: 3%;')
+									thead
+										tr
+											th(data-field='id') Período
+											th(data-field='name') Receita Líquida
+											th(data-field='price') Custo Fixo
+											th(data-field='price') Comissão
+											th(data-field='price') Lucro
+									tbody
+										each consul in query
+											if consul.co_usuario == list.co_usuario
+												- total_liq += consul.liquida;
+												- total_brut += consul.brut_salario;
+												- total_comision += consul.comision;
+												- total_lucro += consul.lucro;
+												tr
+													case consul.mes
+														when 1 
+															td Enero de #{consul.year}
+														when 2 
+															td Febrero de #{consul.year}
+														when 3 
+															td Marzo de #{consul.year}
+														when 4 
+															td Abril de #{consul.year}
+														when 5 
+															td Mayo de #{consul.year}
+														when 6 
+															td Junio de #{consul.year}
+														when 7 
+															td Julio de #{consul.year}
+														when 8 
+															td Agosto de #{consul.year}
+														when 9 
+															td Septiembre de #{consul.year}
+														when 10 
+															td Octubre de #{consul.year}
+														when 11 
+															td Noviembre de #{consul.year}
+														when 12 
+															td Diciembre de #{consul.year}													
+													td= 'R$ '+Number(consul.liquida.toFixed(2)).toLocaleString('de-DE')
+													td= 'R$ '+Number(consul.brut_salario.toFixed(2)).toLocaleString('de-DE')
+													td= 'R$ '+Number(consul.comision.toFixed(2)).toLocaleString('de-DE')
+													if total_lucro < 0
+														td(style="color:red;")= 'R$ '+Number(consul.lucro.toFixed(2)).toLocaleString('de-DE')
+													else
+														td= 'R$ '+Number(consul.lucro.toFixed(2)).toLocaleString('de-DE')
+									thead.grey.lighten-4
+										tr
+											th(data-field='id' id="total") SALDO
+											th= 'R$ '+Number(total_liq.toFixed(2)).toLocaleString('de-DE')
+											th= 'R$ '+Number(total_brut.toFixed(2)).toLocaleString('de-DE')
+											th= 'R$ '+Number(total_comision.toFixed(2)).toLocaleString('de-DE')
+											th(style='color: #0d47a1;')= 'R$ '+Number(total_lucro.toFixed(2)).toLocaleString('de-DE')

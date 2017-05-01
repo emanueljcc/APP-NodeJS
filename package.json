@@ -1,0 +1,32 @@
+{
+  "name": "pruebaagennode-production",
+  "version": "1.0.0",
+  "description": "prueba agence node js express",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "*",
+    "consolidate": "*",
+    "express": "*",
+    "multer": "^1.2.0",
+    "pg": "*",
+    "pug": "^2.0.0-alpha6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js"
+  },
+  "engines":{
+    "node":"6.10.2",
+    "npm": "4.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emanueljcc/pruebanodeapp-production.git"
+  },
+  "author": "Emanuel Castillo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emanueljcc/pruebanodeapp-production/issues"
+  },
+  "homepage": "https://github.com/emanueljcc/pruebanodeapp-production#readme"
+}

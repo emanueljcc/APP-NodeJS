@@ -1,0 +1,41 @@
+extends ../layouts/layout.pug
+block content
+	.row
+		.col.s12
+			br
+			.page-title
+				form(method='POST', action='/consulta', accept-charset='UTF-8', role='form')
+					input#mesUno(type='hidden', name='mesUno')
+					input#mesDos(type='hidden', name='mesDos')
+					input#yearUno(type='hidden', name='yearUno')
+					input#yearDos(type='hidden', name='yearDos')
+					div(style="display:none;")
+						select#multiple.js-states.browser-default.select2-hidden-accessible(multiple='', aria-hidden='true', tabindex='-1', style='width:100%;', name='select_cons')
+							each row in consultores
+								option(value=row.co_usuario)= row.no_usuario
+					button#relatorio.waves-effect.waves-light.btn(name='relatorio', type='submit', value='relatorio')
+						i.fa.fa-file-o(aria-hidden='true')
+					button#grafico.waves-effect.waves-light.btn(name='grafico', type='submit', value='grafico')
+						i.fa.fa-bar-chart(aria-hidden='true')
+		.col.s12.m12.l12
+			.card-new
+				.card-content
+					#table-agence.row
+						.col.s12.m12.l12
+							a(href='/', style='color: #0089ec !important;')
+								i.fa.fa-arrow-left.fa-3(aria-hidden='true')
+								|  Atrás
+							if query == ''
+								include ../layouts/include.pug	
+							link(href="css/charts.css", rel='stylesheet')
+							script(src="js/jquery-3.2.0.min.js")
+							script(src="js/charts.js")
+							#container.center(style='width: 90%;')
+								.col.s12.m4.offset-m0.grid-example
+									table#chartData
+										each rows in query
+											tr(style='color: #0D7068')
+												td= rows.co_usuario
+												td= rows.liquida
+							.col.s2.m5.l6.animated.zoomIn
+								canvas#chart(width='600', height='500')

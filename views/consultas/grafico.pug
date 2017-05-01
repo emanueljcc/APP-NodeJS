@@ -1,0 +1,76 @@
+extends ../layouts/layout.pug
+block content
+	.row
+		.col.s12
+			br
+			.page-title
+				form(method='POST', action='/consulta', accept-charset='UTF-8', role='form')
+					input#mesUno(type='hidden', name='mesUno')
+					input#mesDos(type='hidden', name='mesDos')
+					input#yearUno(type='hidden', name='yearUno')
+					input#yearDos(type='hidden', name='yearDos')
+					div(style="display:none;")
+						select#multiple.js-states.browser-default.select2-hidden-accessible(multiple='', aria-hidden='true', tabindex='-1', style='width:100%;', name='select_cons')
+							each row in consultores
+								option(value=row.co_usuario)= row.no_usuario
+					button#relatorio.waves-effect.waves-light.btn(name='relatorio', type='submit', value='relatorio')
+						i.fa.fa-file-o.chart(aria-hidden='true')
+					button#pizza.waves-effect.waves-light.btn(name='pizza', type='submit', value='pizza')
+						i.fa.fa-pie-chart(aria-hidden='true')
+		.col.s12.m12.l12
+			.card
+				.card-content
+					#table-agence.row
+						.col.s12.m12.l12
+							a(href='/', style='color: #0089ec !important;')
+								i.fa.fa-arrow-left.fa-3(aria-hidden='true')
+								|  Atrás
+							if query == ''
+								include ../layouts/include.pug
+							#grafico.center(style='width: 90%;')
+							//-each list in query2
+							input(type="text", id="query", value= query )
+							input(type="hidden", id="query2", value= JSON.stringify(query2) )
+							script(src="js/jquery-3.2.0.min.js")
+							script(src="js/highcharts.js")
+							script(src="js/exporting.js")
+							script.
+								$(function($){
+									var query_arr = !{query};
+									var query_arr2 = !{query2};
+									var co_usuario = [];
+									var mes = [];
+									var liquida = [];
+									var brut_salario = [];
+									var conditional1 = query_arr[0].co_usuario;
+									var conditional2 = query_arr2[0].co_usuario;
+									for( var i = 0; i < query_arr.length; i++ )
+									{
+
+										var query_for = query_arr[i];
+
+										//console.log(query_for);
+										co_usuario.push( query_for.co_usuario );
+										//- mes.push( visit.mes );
+										liquida.push( query_for.liquida );
+										//- brut_salario.push( visit.brut_salario );
+									}
+									console.log(co_usuario);
+									//- console.log(mes);
+									//- console.log(liquida);
+									//- console.log(brut_salario);
+									$('#grafico').highcharts({
+										title: {text:'Primera grafica'},
+										xAxix:{categories:[2002,2004,2015]},
+										yAxis:{title:'Porcentaje %',plotLines:[{value:0,width:1,color:'#808080'}]},
+										tooltip:{valuesSuffix:'%'},
+										legend:{layout:'vertical',align:'right',verticalAlign:'middle',borderWidth:0},
+										series:[
+												{type:'column',name:'Java',data:[25,23,21]},
+												{type:'spline',name:'c++',data:[5,29,31]},
+												{type:'column',name:'php',data:[26,53,81]},
+											
+										],
+											plotOptions:{line:{dataLabels:{enabled:true}}},
+									});
+								});

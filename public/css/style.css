@@ -1,0 +1,81 @@
+.icon-block {
+  padding: 0 15px;
+}
+.icon-block .material-icons {
+	font-size: inherit;
+}
+
+a{
+  color:#5f5e5c !important;
+  font-size: 9pt !important;
+  font-weight: bold !important;
+}
+.btn{
+  text-transform: capitalize;
+}
+.select-wrapper input.select-dropdown {
+    height: 1rem;
+    line-height: 2rem;
+    font-size: 9pt;
+    margin: 0 0 5px;
+    
+}
+#table-agence{
+  font-size: 9pt !important;
+}
+#logo{
+      margin-top: 6%;
+}
+nav ul a {
+    
+    padding: 0 8px !important;
+}
+html{
+  background:rgb(244, 244, 244);
+}
+.btn-small {
+    height: 24px;
+    line-height: 24px;
+    padding: 0 0.5rem;
+}
+img{
+  display: none;
+}
+.mn-inner{
+  display: none;
+}
+.select2-selection__rendered{
+  font-size: 9pt !important;
+}
+.titulo{
+  line-height: 24px;
+  font-size: 13px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,.54);
+}
+#spanhidden{
+  display: none;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    height: 29px!important;
+    font-size: 10px!important;
+}
+span.badge.new{
+  font-weight: bold !important;
+}
+.retraso1{
+  animation-delay:1s;
+}
+.retraso2{
+  animation-delay:2s;
+}
+.card-new {
+  margin: 0.5rem 0 1rem 0;
+  background-color: #fff;
+  transition: box-shadow .25s;
+  border-radius: 2px;
+}
