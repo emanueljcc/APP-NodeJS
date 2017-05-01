@@ -1,0 +1,8 @@
+if rows.co_usuario.length <= 13
+	- var color = 'color: #00796b;';
+else if rows.co_usuario.length >= 16
+	- var color = 'color: #039be5;';
+else if rows.co_usuario.substring(0,1) == 'c'
+	- var color = 'color: #ff7043;';
+else
+	- var color = 'color: #000000;';

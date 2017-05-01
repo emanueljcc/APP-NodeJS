@@ -28,49 +28,56 @@ block content
 							if query == ''
 								include ../layouts/include.pug
 							#grafico.center(style='width: 90%;')
-							//-each list in query2
-							input(type="text", id="query", value= query )
-							input(type="hidden", id="query2", value= JSON.stringify(query2) )
 							script(src="js/jquery-3.2.0.min.js")
 							script(src="js/highcharts.js")
 							script(src="js/exporting.js")
 							script.
 								$(function($){
-									var query_arr = !{query};
-									var query_arr2 = !{query2};
-									var co_usuario = [];
-									var mes = [];
-									var liquida = [];
-									var brut_salario = [];
-									var conditional1 = query_arr[0].co_usuario;
-									var conditional2 = query_arr2[0].co_usuario;
-									for( var i = 0; i < query_arr.length; i++ )
-									{
-
-										var query_for = query_arr[i];
-
-										//console.log(query_for);
-										co_usuario.push( query_for.co_usuario );
-										//- mes.push( visit.mes );
-										liquida.push( query_for.liquida );
-										//- brut_salario.push( visit.brut_salario );
+								
+									var list = [];
+									var list_mes = [];
+									var list_brut = [];
+									var list_user = [];
+									var query = !{query};
+									var query2 = !{query2};
+									for( var i = 0; i < query.length; i++ ){
+										for( lol in query2 ){
+											list.push(query[i].liquida);
+											list_mes.push(query[i].mes);
+											list_brut.push(query[i].brut_salario);
+											list_user.push(query[i].co_usuario);
+											if(list_mes == 1){
+												list_mes = JSON.stringify('Enero');
+											}
+										}
 									}
-									console.log(co_usuario);
-									//- console.log(mes);
-									//- console.log(liquida);
-									//- console.log(brut_salario);
-									$('#grafico').highcharts({
-										title: {text:'Primera grafica'},
-										xAxix:{categories:[2002,2004,2015]},
-										yAxis:{title:'Porcentaje %',plotLines:[{value:0,width:1,color:'#808080'}]},
-										tooltip:{valuesSuffix:'%'},
-										legend:{layout:'vertical',align:'right',verticalAlign:'middle',borderWidth:0},
-										series:[
-												{type:'column',name:'Java',data:[25,23,21]},
-												{type:'spline',name:'c++',data:[5,29,31]},
-												{type:'column',name:'php',data:[26,53,81]},
-											
-										],
-											plotOptions:{line:{dataLabels:{enabled:true}}},
+									Highcharts.chart('grafico', {
+										title: {
+										text: 'Grafico de consultores'
+										},
+										//MES
+										xAxis: {
+											categories: [list_mes]
+										},
+										//LIQUIDA
+										series: [
+											{
+												type: 'column',
+												name: list_user,
+													data: [list]
+											}, 
+											// BRUT_SALARIO
+											{
+												type: 'spline',
+												name: 'Average',
+												data: [list_brut],
+												marker: {
+													lineWidth: 2,
+													lineColor: Highcharts.getOptions().colors[3],
+													fillColor: 'white'
+												}
+											},
+										]
 									});
+									
 								});

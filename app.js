@@ -5,10 +5,9 @@ var cons = require('consolidate');
 var pug = require('pug');
 var pg = require('pg');
 var app = express();
-var multer = require('multer');
 
-/*Conexion base de datos production*/
 var conexion = new pg.Client();
+/******Conexion base de datos PRODUCCION******/
 var config = {
   user: 'vozxyzhccjhauc', 
   database: 'dd1nuv5leev1di', 
@@ -18,7 +17,18 @@ var config = {
   max: 10, 
   idleTimeoutMillis: 30000, 
 };
+/******Conexion base de datos LOCALHOST******/
+/*var config = {
+  user: 'postgres', 
+  database: 'agence', 
+  password: 'root', 
+  host: 'localhost',
+  port: 5433,
+  max: 10, 
+  idleTimeoutMillis: 30000, 
+};*/
 var pool = new pg.Pool(config);
+
 /*Definiendo el template*/
 app.engine('pug', cons.pug);
 app.set('view engine', 'pug');
@@ -44,6 +54,7 @@ var meses = [
     {"mes" : "Nov", "val" : 11},
     {"mes" : "Dic", "val" : 12},
 ];
+//yearUno-yearDos
 var anios = [];
 for (i = 2003; i < 2008; i++) {
 	anios.push({"anio": i});
@@ -101,8 +112,7 @@ app.post('/consulta',function(req,res){
 						if (err) {
 							console.error('error ejecutando la consulta', err);
 						}
-						res.render('consultas/grafico',{query: JSON.stringify(result.rows),query2: JSON.stringify(resultado.rows),consultores: resultado2.rows});
-						//console.log(JSON.stringify(result.rows));
+						res.render('consultas/grafico',{query: JSON.stringify(result.rows),query_each: resultado.rows,query2: JSON.stringify(resultado.rows),consultores: resultado2.rows});
 						done();
 					});
 				});

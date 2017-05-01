@@ -34,8 +34,9 @@ block content
 								.col.s12.m4.offset-m0.grid-example
 									table#chartData
 										each rows in query
-											tr(style='color: #0D7068')
-												td= rows.co_usuario
-												td= rows.liquida
+											include ../layouts/cl.pug
+											tr(style= color)
+												td(style= color)= rows.co_usuario
+												td(style= color)= rows.liquida
 							.col.s2.m5.l6.animated.zoomIn
 								canvas#chart(width='600', height='500')
