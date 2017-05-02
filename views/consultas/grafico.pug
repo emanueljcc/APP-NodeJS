@@ -27,57 +27,49 @@ block content
 								|  Atrás
 							if query == ''
 								include ../layouts/include.pug
-							#grafico.center(style='width: 90%;')
+							#grafica.center(style='width: 90%;')
 							script(src="js/jquery-3.2.0.min.js")
 							script(src="js/highcharts.js")
 							script(src="js/exporting.js")
 							script.
 								$(function($){
-								
-									var list = [];
-									var list_mes = [];
-									var list_brut = [];
-									var list_user = [];
 									var query = !{query};
-									var query2 = !{query2};
-									for( var i = 0; i < query.length; i++ ){
-										for( lol in query2 ){
-											list.push(query[i].liquida);
-											list_mes.push(query[i].mes);
-											list_brut.push(query[i].brut_salario);
-											list_user.push(query[i].co_usuario);
-											if(list_mes == 1){
-												list_mes = JSON.stringify('Enero');
-											}
-										}
+									newObj = function(Obj,obj2,obj3){
+									    if(Obj[obj2]){
+									        Obj[obj2][Obj[obj2].length] = obj3;
+									    }else{
+									        Obj[obj2] = [obj3];
+									    }
 									}
-									Highcharts.chart('grafico', {
-										title: {
-										text: 'Grafico de consultores'
+									var series={}
+									var brut_salario=[]
+									seriesPush=[]
+									var mes=[]
+									var meses=['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'];
+
+									for(row in query){
+										var mes2=meses[parseInt(query[row].mes)-1];
+										if(mes.indexOf(mes2)==-1){
+											var brut_s=parseFloat(query[row].brut_salario)
+											brut_salario.push(brut_s);
+											mes.push(mes2)
+										}
+										newObj(series,query[row].no_usuario,query[row].liquida)
+									}
+									for(var valor in series){
+										seriesPush.push({type:'column',name:valor,data:series[valor]})
+									}
+									seriesPush.push(  {type: 'spline',name: 'Costo Fijo Medio',data: brut_salario,marker: {lineWidth: 3,lineColor: Highcharts.getOptions().colors[4],fillColor: 'red'} })
+									Highcharts.chart('grafica', {
+								        title: {
+								            text: 'Grafica de Consultores Agence'
+								        },
+								        tooltip: {
+										  valueDecimals: 2
 										},
-										//MES
-										xAxis: {
-											categories: [list_mes]
-										},
-										//LIQUIDA
-										series: [
-											{
-												type: 'column',
-												name: list_user,
-													data: [list]
-											}, 
-											// BRUT_SALARIO
-											{
-												type: 'spline',
-												name: 'Average',
-												data: [list_brut],
-												marker: {
-													lineWidth: 2,
-													lineColor: Highcharts.getOptions().colors[3],
-													fillColor: 'white'
-												}
-											},
-										]
-									});
-									
+								        xAxis: {
+								            categories: mes
+								        },
+								        series: seriesPush
+								    });
 								});

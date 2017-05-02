@@ -8,7 +8,7 @@ var app = express();
 
 var conexion = new pg.Client();
 /******Conexion base de datos PRODUCCION******/
-var config = {
+/*var config = {
   user: 'vozxyzhccjhauc', 
   database: 'dd1nuv5leev1di', 
   password: '80706800c2771894ac9f6bf510276366d55a52330b951cc84491b986e75d13b6', 
@@ -16,17 +16,17 @@ var config = {
   port: 5432,
   max: 10, 
   idleTimeoutMillis: 30000, 
-};
+};*/
 /******Conexion base de datos LOCALHOST******/
-/*var config = {
+var config = {
   user: 'postgres', 
   database: 'agence', 
   password: 'root', 
   host: 'localhost',
-  port: 5433,
+  port: 5432,
   max: 10, 
   idleTimeoutMillis: 30000, 
-};*/
+};
 var pool = new pg.Pool(config);
 
 /*Definiendo el template*/
@@ -40,20 +40,14 @@ app.set('views', __dirname + '/views');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-var meses = [
-    {"mes" : "Ene", "val" : 1},
-    {"mes" : "Feb", "val" : 2},
-    {"mes" : "Mar", "val" : 3},
-    {"mes" : "Abr", "val" : 4},
-    {"mes" : "May", "val" : 5},
-    {"mes" : "Jun", "val" : 6},
-    {"mes" : "Jul", "val" : 7},
-    {"mes" : "Ago", "val" : 8},
-    {"mes" : "Sep", "val" : 9},
-    {"mes" : "Oct", "val" : 10},
-    {"mes" : "Nov", "val" : 11},
-    {"mes" : "Dic", "val" : 12},
-];
+
+//mesUno-mesDos
+var meses = []
+var ms=['mes','Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'];
+for (var i = 1; i < ms.length; i++) {
+	meses.push({"mes" : ms[i],"val" : i})
+}
+
 //yearUno-yearDos
 var anios = [];
 for (i = 2003; i < 2008; i++) {
@@ -107,14 +101,12 @@ app.post('/consulta',function(req,res){
 			});
 		}else if(req.body.grafico){
 			conexion.query("SELECT c.brut_salario, d.co_usuario, d.no_usuario, date_part('month',data_emissao) AS mes, date_part('year',data_emissao) AS year, sum(a.valor - ((a.valor * a.total_imp_inc)) / 100) AS liquida FROM cao_fatura a INNER JOIN cao_os b ON b.co_os = a.co_os INNER JOIN cao_salario c ON c.co_usuario = b.co_usuario RIGHT JOIN cao_usuario d ON d.co_usuario = b.co_usuario WHERE "+problem_one+" AND EXTRACT(month FROM data_emissao) BETWEEN $1 AND $2 AND EXTRACT(year FROM data_emissao) BETWEEN $3 AND $4 GROUP BY c.brut_salario,d.co_usuario,b.co_usuario,d.no_usuario, mes,year ORDER BY mes ASC",[mesUno,mesDos,yearUno,yearDos,select_cons],function(err,result) {
-				conexion.query("SELECT d.co_usuario FROM cao_fatura a INNER JOIN cao_os b ON b.co_os = a.co_os INNER JOIN cao_salario c ON c.co_usuario = b.co_usuario INNER JOIN cao_usuario d ON d.co_usuario = b.co_usuario WHERE "+problem_one+" AND EXTRACT(month FROM data_emissao) BETWEEN $1 AND $2 AND EXTRACT(year FROM data_emissao) BETWEEN $3 AND $4 GROUP BY d.co_usuario ORDER BY d.co_usuario ASC",[mesUno,mesDos,yearUno,yearDos,select_cons],function(err, resultado){
-					conexion.query("SELECT b.no_usuario,b.co_usuario FROM permissao_sistema a INNER JOIN cao_usuario b on a.co_usuario = b.co_usuario WHERE (a.co_sistema = 1 AND a.in_ativo = 'S') AND a.co_tipo_usuario in (0, 1, 2) ORDER BY a.co_usuario ASC", function(err, resultado2) {
-						if (err) {
-							console.error('error ejecutando la consulta', err);
-						}
-						res.render('consultas/grafico',{query: JSON.stringify(result.rows),query_each: resultado.rows,query2: JSON.stringify(resultado.rows),consultores: resultado2.rows});
-						done();
-					});
+				conexion.query("SELECT b.no_usuario,b.co_usuario FROM permissao_sistema a INNER JOIN cao_usuario b on a.co_usuario = b.co_usuario WHERE (a.co_sistema = 1 AND a.in_ativo = 'S') AND a.co_tipo_usuario in (0, 1, 2) ORDER BY a.co_usuario ASC", function(err, resultado2) {
+					if (err) {
+						console.error('error ejecutando la consulta', err);
+					}
+					res.render('consultas/grafico',{query: JSON.stringify(result.rows),consultores: resultado2.rows});
+					done();
 				});
 			});
 		}else if(req.body.pizza){
