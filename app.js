@@ -8,7 +8,7 @@ var app = express();
 
 var conexion = new pg.Client();
 /******Conexion base de datos PRODUCCION******/
-/*var config = {
+var config = {
   user: 'vozxyzhccjhauc', 
   database: 'dd1nuv5leev1di', 
   password: '80706800c2771894ac9f6bf510276366d55a52330b951cc84491b986e75d13b6', 
@@ -16,17 +16,17 @@ var conexion = new pg.Client();
   port: 5432,
   max: 10, 
   idleTimeoutMillis: 30000, 
-};*/
+};
 /******Conexion base de datos LOCALHOST******/
-var config = {
+/*var config = {
   user: 'postgres', 
   database: 'agence', 
   password: 'root', 
   host: 'localhost',
-  port: 5432,
+  port: 5433,
   max: 10, 
   idleTimeoutMillis: 30000, 
-};
+};*/
 var pool = new pg.Pool(config);
 
 /*Definiendo el template*/
@@ -89,7 +89,7 @@ app.post('/consulta',function(req,res){
 				return console.error('Error en la consulta', err);
 			}
 			conexion.query("SELECT c.brut_salario, d.co_usuario, d.no_usuario, date_part('month', data_emissao) AS mes, date_part('year', data_emissao) AS year, sum(a.valor - ((a.valor * a.total_imp_inc)) / 100) as liquida, sum((a.valor - ((a.valor * a.total_imp_inc)) / 100) * (a.comissao_cn / 100)) as comision, sum(a.valor - ((a.valor * a.total_imp_inc)) / 100) - (c.brut_salario+sum((a.valor - ((a.valor * a.total_imp_inc)) / 100) * (a.comissao_cn / 100))) as lucro FROM cao_fatura a INNER JOIN cao_os b ON b.co_os = a.co_os INNER JOIN cao_salario c ON c.co_usuario = b.co_usuario RIGHT JOIN cao_usuario d ON d.co_usuario = b.co_usuario WHERE "+problem_one+" AND EXTRACT(month FROM data_emissao) BETWEEN $1 AND $2 AND EXTRACT(year FROM data_emissao) BETWEEN $3 AND $4 GROUP BY c.brut_salario, d.co_usuario, d.no_usuario, b.co_usuario, mes, year ORDER BY mes ASC",[mesUno,mesDos,yearUno,yearDos,select_cons],function(err,result) {
-				conexion.query("SELECT d.co_usuario FROM cao_fatura a INNER JOIN cao_os b ON b.co_os = a.co_os INNER JOIN cao_salario c ON c.co_usuario = b.co_usuario INNER JOIN cao_usuario d ON d.co_usuario = b.co_usuario WHERE "+problem_one+" AND EXTRACT(month FROM data_emissao) BETWEEN $1 AND $2 AND EXTRACT(year FROM data_emissao) BETWEEN $3 AND $4 GROUP BY d.co_usuario ORDER BY d.co_usuario ASC",[mesUno,mesDos,yearUno,yearDos,select_cons],function(err, resultado){
+				conexion.query("SELECT d.no_usuario,d.co_usuario FROM cao_fatura a INNER JOIN cao_os b ON b.co_os = a.co_os INNER JOIN cao_salario c ON c.co_usuario = b.co_usuario INNER JOIN cao_usuario d ON d.co_usuario = b.co_usuario WHERE "+problem_one+" AND EXTRACT(month FROM data_emissao) BETWEEN $1 AND $2 AND EXTRACT(year FROM data_emissao) BETWEEN $3 AND $4 GROUP BY d.no_usuario,d.co_usuario ORDER BY d.co_usuario ASC",[mesUno,mesDos,yearUno,yearDos,select_cons],function(err, resultado){
 					conexion.query("SELECT b.no_usuario,b.co_usuario FROM permissao_sistema a INNER JOIN cao_usuario b on a.co_usuario = b.co_usuario WHERE (a.co_sistema = 1 AND a.in_ativo = 'S') AND a.co_tipo_usuario in (0, 1, 2) ORDER BY a.co_usuario ASC", function(err, resultado2) {
 						if (err) {
 							console.error('error ejecutando la consulta', err);
